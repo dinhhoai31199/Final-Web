@@ -142,7 +142,7 @@ namespace TTN_THKids.Controllers
             List<SanPham> model = new List<SanPham>();
             if (Tensp != "")
             {
-                model = db.SanPhams.Where(x => x.TenSanPham == Tensp).ToList();
+                model = db.SanPhams.Where(x => x.TenSanPham.Contains(Tensp)).ToList();
             }
             else
             {

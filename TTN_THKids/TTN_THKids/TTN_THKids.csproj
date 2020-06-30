@@ -3837,6 +3837,11 @@
     <Content Include="Content\images\9.jpg" />
     <Content Include="Content\images\9.png" />
     <Content Include="Content\images\arrow.png" />
+    <Content Include="Content\images\banner1.jpg" />
+    <Content Include="Content\images\banner3.jpg" />
+    <Content Include="Content\images\banner4.jpg" />
+    <Content Include="Content\images\banner5.jpg" />
+    <Content Include="Content\images\banner7.jpg" />
     <Content Include="Content\images\card.png" />
     <Content Include="Content\images\cart.png" />
     <Content Include="Content\images\close_1.png" />
@@ -3846,7 +3851,9 @@
     <Content Include="Content\images\SP014.jpg" />
     <Content Include="Content\images\star.png" />
     <Content Include="Content\images\star1.png" />
+    <Content Include="Content\images\banner2.jpg" />
     <Content Include="Content\images\tag.png" />
+    <Content Include="Content\images\banner6.jpg" />
     <Content Include="Content\js\bootstrap.min.js" />
     <Content Include="Content\js\counterup.min.js" />
     <Content Include="Content\js\creditly.js" />
