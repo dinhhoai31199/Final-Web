@@ -21,13 +21,15 @@ namespace TTN_THKids.Controllers
 
         public ActionResult SanPhamBanChay()
         {
-            ViewBag.TrangSanPhamBanChay = db.SanPhams.OrderByDescending(x => x.SoLuongMua).Take(8).ToList();
-            return View();
+            var model = db.SanPhams.OrderByDescending(x => x.SoLuongMua).Take(8).ToList();
+            ViewBag.TrangSanPhamBanChay = model;
+            return View(model);
         }
         public ActionResult SanPhamMoi()
         {
-            ViewBag.TrangSanPhamMoi = db.SanPhams.OrderByDescending(x => x.NgayCapNhat).Take(8).ToList();
-            return View();
+            var model = db.SanPhams.OrderByDescending(x => x.NgayCapNhat).Take(8).ToList();
+            ViewBag.TrangSanPhamMoi = model;
+            return View(model);
         }
         public ActionResult Detailes(string id)
         {
