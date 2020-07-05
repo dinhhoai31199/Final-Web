@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using TTN_THKids.Models;
+using System.IO;
+using System.Web.UI;
 
 namespace TTN_THKids.Areas.Admin.Controllers
 {
@@ -15,11 +17,24 @@ namespace TTN_THKids.Areas.Admin.Controllers
         private TTN_THKidsDbContext db = new TTN_THKidsDbContext();
 
         // GET: Admin/SanPham
-        public ActionResult Index()
+        //public ActionResult Index()
+        //{
+        //    var sanPhams = db.SanPhams.Include(s => s.ChatLieu).Include(s => s.DanhMucSanPham).Include(s => s.KichCo).Include(s => s.ThuongHieu);
+        //    return View(sanPhams.ToList());
+        //}
+        public ActionResult Index(int? index = 0)
         {
+            int pagesize = 5;
+            ViewBag.tongTrang = db.SanPhams.ToList().Count() / pagesize + 1; ;
             var sanPhams = db.SanPhams.Include(s => s.ChatLieu).Include(s => s.DanhMucSanPham).Include(s => s.KichCo).Include(s => s.ThuongHieu);
+            if (!string.IsNullOrEmpty(index.ToString()))
+            {
+                sanPhams = sanPhams.OrderBy(x => x.MaSanPham).Skip(index.Value * pagesize).Take(pagesize);
+                return View(sanPhams.ToList());
+            }
             return View(sanPhams.ToList());
         }
+
 
         // GET: Admin/SanPham/Details/5
         public ActionResult Details(string id)
@@ -44,6 +59,8 @@ namespace TTN_THKids.Areas.Admin.Controllers
             ViewBag.MaDMSP = new SelectList(db.DanhMucSanPhams, "MaDMSP", "MaDanhMuc");
             ViewBag.MaKichCo = new SelectList(db.KichCoes, "MaKichCo", "TenKichCo");
             ViewBag.MaThuongHieu = new SelectList(db.ThuongHieux, "MaThuongHieu", "TenThuongHieu");
+            
+
             return View();
         }
 
@@ -54,11 +71,31 @@ namespace TTN_THKids.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "MaSanPham,MaDMSP,MaKichCo,MaChatLieu,MaThuongHieu,TenSanPham,GiaSanPham,GiaChietKhau,SoLuong,LinkAnh,LinkListAnh,ThongTinSP,NgayCapNhat,SoLuongMua")] SanPham sanPham)
         {
+            var file = Request.Files[0];
+            string _FileName = null;
+
+            if (file.ContentLength > 0)
+            {
+                _FileName = Path.GetFileName(file.FileName);
+                string _path = Path.Combine(Server.MapPath("~/Content/images/"), _FileName);
+                file.SaveAs(_path);
+            }
+            sanPham.LinkAnh = _FileName;
+            
+                SanPham Sp = new SanPham();
+            Sp = db.SanPhams.SqlQuery("Select * from SanPham where MaSanPham = '" + sanPham.MaSanPham + "'").SingleOrDefault();
+            if (Sp != null)
+            {
+                Sp.SoLuong++;
+                db.Database.ExecuteSqlCommand("Update SanPham set SoLuong = " + Sp.SoLuong + "Where MaSanPham='" + sanPham.MaSanPham + "'");
+                return RedirectToAction("Index");
+            }
             if (ModelState.IsValid)
             {
                 db.SanPhams.Add(sanPham);
                 db.SaveChanges();
                 return RedirectToAction("Index");
+                
             }
 
             ViewBag.MaChatLieu = new SelectList(db.ChatLieux, "MaChatLieu", "TenChatLieu", sanPham.MaChatLieu);
